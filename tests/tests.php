@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/testframework.php';
 
-require_once "../config.php";
+require_once "../site/config.php";
 require_once "../site/modules/database.php";
 require_once "../site/modules/page.php";
 
