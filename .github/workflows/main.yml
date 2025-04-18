@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build -t containers08 .
+
+      - name: Create container
+        run: docker create --name container --volume database:/var/www/db containers08
+
+      - name: Copy tests to the container
+        run: docker cp ./tests container:/var/www/html
+
+      - name: Up the container
+        run: docker start container
+
+      - name: Run tests
+        run: docker exec container php /var/www/html/tests/tests.php
+
+      - name: Stop the container
+        run: docker stop container
+
+      - name: Remove the container
+        run: docker rm container
+
+      - name: Remove Docker image
+        run: docker rmi containers08 || true
